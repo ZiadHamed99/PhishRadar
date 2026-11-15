@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PhishRadar</title>
+<style>
+:root { --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+html, body { background: #0a0e1a; margin: 0; }
+</style>
+</head>
+<body>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+
+.app {
+  background: #0a0e1a;
+  min-height: 600px;
+  border-radius: 16px;
+  overflow: hidden;
+  color: #fff;
+  position: relative;
+}
+
+.header {
+  background: #0d1224;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #00d4ff, #0066ff);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.logo-text {
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(90deg, #00d4ff, #0066ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lang-switcher {
+  display: flex;
+  gap: 6px;
+}
+
+.lang-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.6);
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.lang-btn.active {
+  background: rgba(0,212,255,0.15);
+  border-color: #00d4ff;
+  color: #00d4ff;
+}
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+.onboarding {
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.shield-big {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(0,102,255,0.2));
+  border: 2px solid rgba(0,212,255,0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 24px;
+}
+
+.onboarding h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.onboarding p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.feature {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feature-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.feature-icon.blue { background: rgba(0,102,255,0.2); }
+.feature-icon.cyan { background: rgba(0,212,255,0.2); }
+.feature-icon.purple { background: rgba(120,80,255,0.2); }
+
+.feature-text strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.feature-text span {
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #00d4ff, #0066ff);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover { opacity: 0.9; }
+
+.dashboard {
+  padding: 20px;
+}
+
+.dashboard h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.dashboard .subtitle {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 20px;
+}
+
+.input-area {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+
+.input-area:focus-within {
+  border-color: rgba(0,212,255,0.5);
+}
+
+.input-area textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none;
+  height: 100px;
+  font-family: var(--font-sans);
+  outline: none;
+}
+
+.input-area textarea::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+.examples-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 8px;
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.example-chip {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.example-chip:hover {
+  background: rgba(0,212,255,0.1);
+  border-color: rgba(0,212,255,0.3);
+  color: #00d4ff;
+}
+
+.result-screen {
+  padding: 20px;
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  padding: 0;
+}
+
+.back-btn:hover { color: #fff; }
+
+.result-card {
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.result-card.danger {
+  background: rgba(220,50,50,0.12);
+  border: 1px solid rgba(220,50,50,0.3);
+}
+
+.result-card.warning {
+  background: rgba(255,165,0,0.12);
+  border: 1px solid rgba(255,165,0,0.3);
+}
+
+.result-card.safe {
+  background: rgba(0,200,100,0.12);
+  border: 1px solid rgba(0,200,100,0.3);
+}
+
+.result-emoji {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.result-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.result-card.danger .result-title { color: #ff6b6b; }
+.result-card.warning .result-title { color: #ffa500; }
+.result-card.safe .result-title { color: #00c864; }
+
+.result-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+}
+
+.action-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.action-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.action-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10,14,26,0.9);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border-radius: 16px;
+  z-index: 10;
+}
+
+.loading-overlay.show { display: flex; }
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0,212,255,0.2);
+  border-top-color: #00d4ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+</style>
+
+<div class="app" id="app">
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">🛡️</div>
+      <span class="logo-text">PhishRadar</span>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('de')">DE</button>
+      <button class="lang-btn" onclick="setLang('ar')">AR</button>
+      <button class="lang-btn" onclick="setLang('fr')">FA</button>
+    </div>
+  </div>
+
+  <div class="screen active" id="screen-onboarding">
+    <div class="onboarding">
+      <div class="shield-big pulse">🛡️</div>
+      <h1 id="ob-title">Stay Safe Online</h1>
+      <p id="ob-desc">PhishRadar uses AI to detect scam messages, phishing links, and suspicious texts before they trick you.</p>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon blue">🤖</div>
+          <div class="feature-text">
+            <strong id="f1-title">AI-Powered Analysis</strong>
+            <span id="f1-desc">Real intelligence, not just keywords</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon cyan">⚡</div>
+          <div class="feature-text">
+            <strong id="f2-title">Instant Results</strong>
+            <span id="f2-desc">Get an answer in seconds</span>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="feature-icon purple">🌍</div>
+          <div class="feature-text">
+            <strong id="f3-title">4 Languages</strong>
+            <span id="f3-desc">English, German, Arabic, Franco Arabic</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" id="ob-btn" onclick="showScreen('dashboard')">Get Started →</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-dashboard">
+    <div class="dashboard">
+      <h2 id="dash-title">Check a Message</h2>
+      <p class="subtitle" id="dash-sub">Paste any suspicious text below</p>
+      <div class="input-area">
+        <textarea id="msg-input" placeholder="Paste your message here..."></textarea>
+      </div>
+      <p class="examples-label" id="ex-label">Quick examples:</p>
+      <div class="examples">
+        <span class="example-chip" onclick="loadExample('phish')" id="ex1">🎣 Phishing link</span>
+        <span class="example-chip" onclick="loadExample('bank')" id="ex2">🏦 Fake bank</span>
+        <span class="example-chip" onclick="loadExample('safe')" id="ex3">✅ Normal message</span>
+        <span class="example-chip" onclick="loadExample('franco')" id="ex4">💬 Franco Arabic</span>
+      </div>
+      <button class="btn-primary" id="check-btn" onclick="analyzeMessage()">🔍 Check Now</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-result">
+    <div class="result-screen">
+      <button class="back-btn" onclick="showScreen('dashboard')">← <span id="back-txt">Back</span></button>
+      <div class="result-card" id="result-card">
+        <div class="result-emoji" id="result-emoji">⚠️</div>
+        <div class="result-title" id="result-title">Analyzing...</div>
+        <div class="result-desc" id="result-desc"></div>
+      </div>
+      <div class="action-box">
+        <div class="action-label" id="action-label">What to do</div>
+        <div class="action-text" id="action-text"></div>
+      </div>
+      <button class="btn-primary" onclick="showScreen('dashboard')" id="check-again-btn">Check Another Message</button>
+    </div>
+  </div>
+
+  <div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loading-text">Analyzing with AI...</div>
+  </div>
+</div>
+
+<script>
+const T = {
+  en: {
+    obTitle: 'Stay Safe Online',
+    obDesc: 'PhishRadar uses AI to detect scam messages, phishing links, and suspicious texts before they trick you.',
+    f1: 'AI-Powered Analysis', f1d: 'Real intelligence, not just keywords',
+    f2: 'Instant Results', f2d: 'Get an answer in seconds',
+    f3: '4 Languages', f3d: 'English, German, Arabic, Franco Arabic',
+    obBtn: 'Get Started →',
+    dashTitle: 'Check a Message',
+    dashSub: 'Paste any suspicious text below',
+    placeholder: 'Paste your message here...',
+    exLabel: 'Quick examples:',
+    ex1: '🎣 Phishing link', ex2: '🏦 Fake bank', ex3: '✅ Normal message', ex4: '💬 Franco Arabic',
+    checkBtn: '🔍 Check Now',
+    back: 'Back',
+    actionLabel: 'What to do',
+    checkAgain: 'Check Another Message',
+    loading: 'Analyzing with AI...',
+    dir: 'ltr'
+  },
+  de: {
+    obTitle: 'Bleib sicher online',
+    obDesc: 'PhishRadar erkennt mit KI betrügerische Nachrichten und Phishing-Links, bevor sie dich täuschen.',
+    f1: 'KI-Analyse', f1d: 'Echte Intelligenz, keine Schlüsselwörter',
+    f2: 'Sofortige Ergebnisse', f2d: 'Antwort in Sekunden',
+    f3: '4 Sprachen', f3d: 'Englisch, Deutsch, Arabisch, Franco-Arabisch',
+    obBtn: 'Loslegen →',
+    dashTitle: 'Nachricht prüfen',
+    dashSub: 'Verdächtigen Text unten einfügen',
+    placeholder: 'Nachricht hier einfügen...',
+    exLabel: 'Schnellbeispiele:',
+    ex1: '🎣 Phishing-Link', ex2: '🏦 Fake-Bank', ex3: '✅ Normale Nachricht', ex4: '💬 Franco-Arabisch',
+    checkBtn: '🔍 Jetzt prüfen',
+    back: 'Zurück',
+    actionLabel: 'Was tun',
+    checkAgain: 'Weitere Nachricht prüfen',
+    loading: 'KI analysiert...',
+    dir: 'ltr'
+  },
+  ar: {
+    obTitle: 'ابقَ آمناً على الإنترنت',
+    obDesc: 'PhishRadar يستخدم الذكاء الاصطناعي للكشف عن الرسائل الاحتيالية وروابط التصيد قبل أن تقع في فخها.',
+    f1: 'تحليل بالذكاء الاصطناعي', f1d: 'ذكاء حقيقي وليس مجرد كلمات مفتاحية',
+    f2: 'نتائج فورية', f2d: 'احصل على إجابة في ثوانٍ',
+    f3: '4 لغات', f3d: 'الإنجليزية والألمانية والعربية والفرانكو',
+    obBtn: 'ابدأ الآن →',
+    dashTitle: 'تحقق من رسالة',
+    dashSub: 'الصق أي نص مشبوه أدناه',
+    placeholder: 'الصق رسالتك هنا...',
+    exLabel: 'أمثلة سريعة:',
+    ex1: '🎣 رابط تصيد', ex2: '🏦 بنك مزيف', ex3: '✅ رسالة عادية', ex4: '💬 فرانكو عربي',
+    checkBtn: '🔍 تحقق الآن',
+    back: 'رجوع',
+    actionLabel: 'ماذا تفعل',
+    checkAgain: 'تحقق من رسالة أخرى',
+    loading: 'يحلل الذكاء الاصطناعي...',
+    dir: 'rtl'
+  },
+  fr: {
+    obTitle: 'Koon amen online',
+    obDesc: 'PhishRadar biyesta2mel AI 3shan yektashef el messages el fake w el phishing 2abl ma te2a3 f el fakh.',
+    f1: 'Tahleel b AI', f1d: 'Mish bas keywords, deka2 7a2i2y',
+    f2: 'Neta2eg Fast', f2d: '3andak el rad f tawany',
+    f3: '4 Lo3\'at', f3d: 'Englizy, Almany, 3araby, Franco',
+    obBtn: 'Ebda2 Delwa2ty →',
+    dashTitle: 'Eftahas Message',
+    dashSub: 'El2 ay text mesh tamen hena',
+    placeholder: 'El2 el message hena...',
+    exLabel: 'Amtela sari3a:',
+    ex1: '🎣 Link phishing', ex2: '🏦 Bank fake', ex3: '✅ Message 3ady', ex4: '💬 Franco 3araby',
+    checkBtn: '🔍 Eftahas Delwa2ty',
+    back: 'Gar3',
+    actionLabel: 'Eh el 7al',
+    checkAgain: 'Eftahas message tany',
+    loading: 'AI biye7alel...',
+    dir: 'ltr'
+  }
+};
+
+const examples = {
+  phish: 'URGENT: Your account has been compromised! Click here immediately to verify your identity or your account will be permanently deleted: http://secure-verify-login.xyz/account',
+  bank: 'Dear customer, your bank account has been suspended due to suspicious activity. Call 0800-FAKE-BANK immediately to restore access and provide your PIN and full card number.',
+  safe: 'Hey! Just checking if you are free for lunch tomorrow? Was thinking we could go to that new Italian place near the office. Let me know!',
+  franco: 'Ya 3am el bank ba3atly message we2alo en hesaby ma2fool we lazem ad5al el link dah w a7ot el password w el credit card bta3ty... dah mashi wala la2?'
+};
+
+let currentLang = 'en';
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = T[lang];
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('ob-title').textContent = t.obTitle;
+  document.getElementById('ob-desc').textContent = t.obDesc;
+  document.getElementById('f1-title').textContent = t.f1;
+  document.getElementById('f1-desc').textContent = t.f1d;
+  document.getElementById('f2-title').textContent = t.f2;
+  document.getElementById('f2-desc').textContent = t.f2d;
+  document.getElementById('f3-title').textContent = t.f3;
+  document.getElementById('f3-desc').textContent = t.f3d;
+  document.getElementById('ob-btn').textContent = t.obBtn;
+  document.getElementById('dash-title').textContent = t.dashTitle;
+  document.getElementById('dash-sub').textContent = t.dashSub;
+  document.getElementById('msg-input').placeholder = t.placeholder;
+  document.getElementById('ex-label').textContent = t.exLabel;
+  document.getElementById('ex1').textContent = t.ex1;
+  document.getElementById('ex2').textContent = t.ex2;
+  document.getElementById('ex3').textContent = t.ex3;
+  document.getElementById('ex4').textContent = t.ex4;
+  document.getElementById('check-btn').textContent = t.checkBtn;
+  document.getElementById('back-txt').textContent = t.back;
+  document.getElementById('action-label').textContent = t.actionLabel;
+  document.getElementById('check-again-btn').textContent = t.checkAgain;
+  document.getElementById('loading-text').textContent = t.loading;
+  document.getElementById('app').style.direction = t.dir;
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+function loadExample(type) {
+  document.getElementById('msg-input').value = examples[type];
+  document.getElementById('msg-input').focus();
+}
+
+async function analyzeMessage() {
+  const msg = document.getElementById('msg-input').value.trim();
+  if (!msg) return;
+  
+  document.getElementById('loading').classList.add('show');
+  
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: `You are a cybersecurity expert. Analyze this message for phishing, scams, or fraud. Reply ONLY with valid JSON in this exact format (no markdown, no backticks):
+{"risk":"danger|warning|safe","title":"short verdict (max 5 words)","description":"2-3 sentence explanation","action":"specific advice what to do"}
+
+Message to analyze: ${msg}`
+        }]
+      })
+    });
+    
+    const data = await res.json();
+    const text = data.content[0].text;
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch(e) {
+      const clean = text.replace(/```json|```/g,'').trim();
+      result = JSON.parse(clean);
+    }
+    showResult(result);
+  } catch(e) {
+    showResult(localAnalysis(msg));
+  }
+  
+  document.getElementById('loading').classList.remove('show');
+}
+
+function localAnalysis(msg) {
+  const lower = msg.toLowerCase();
+  const dangerWords = ['click here','verify','suspended','urgent','password','credit card','bank account','compromised','immediately','pin'];
+  const score = dangerWords.filter(w => lower.includes(w)).length;
+  
+  if (score >= 3) return {
+    risk: 'danger',
+    title: '🚨 Likely a scam!',
+    description: 'This message contains multiple red flags commonly found in phishing and fraud attempts.',
+    action: 'Do not click any links. Do not provide any personal information. Delete the message immediately.'
+  };
+  if (score >= 1) return {
+    risk: 'warning',
+    title: '⚠️ Be careful',
+    description: 'This message has some suspicious elements. Proceed with caution.',
+    action: 'Do not click links without verifying the sender. Contact the organization directly through official channels.'
+  };
+  return {
+    risk: 'safe',
+    title: '✅ Looks safe',
+    description: 'No obvious phishing patterns detected in this message.',
+    action: 'Still be cautious. If something feels off, trust your instincts and verify the sender.'
+  };
+}
+
+function showResult(result) {
+  const card = document.getElementById('result-card');
+  card.className = 'result-card ' + result.risk;
+  const emojis = { danger: '🚨', warning: '⚠️', safe: '✅' };
+  document.getElementById('result-emoji').textContent = emojis[result.risk] || '⚠️';
+  document.getElementById('result-title').textContent = result.title;
+  document.getElementById('result-desc').textContent = result.description;
+  document.getElementById('action-text').textContent = result.action;
+  showScreen('result');
+}
+</script>
+
+</body>
+</html>
